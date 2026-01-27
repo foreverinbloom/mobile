@@ -59,6 +59,7 @@ body{
 .btnRow{
   display:flex;
   gap:8px;
+  flex-wrap: wrap;
 }
 
 button{
@@ -155,7 +156,7 @@ button{
   margin-left: 4px;
 }
 
-  .emojiTitle{
+.emojiTitle{
   font-size: 1.15em;
   line-height: 1;
   vertical-align: middle;
@@ -189,17 +190,17 @@ textarea, input { font-family: inherit; }
   <section class="revealCard" aria-label="Rooted in the Word Scripture Memory Tool">
 
     <div class="revealTitle">
-  Rooted in the Word <span class="emojiTitle" aria-hidden="true">🌱</span>
-</div>
+      Rooted in the Word <span class="emojiTitle" aria-hidden="true">🌱</span>
+    </div>
 
     <!-- Verse Source -->
     <div class="keyRow">
-  <div class="keyLabel">Verse source (used to generate initials)</div>
-  <div class="btnRow">
-    <button id="clearSource" type="button" class="miniBtn">Clear</button>
-    <button id="toggleKey" type="button">Hide</button>
-  </div>
-</div>
+      <div class="keyLabel">Verse source (used to generate initials)</div>
+      <div class="btnRow">
+        <button id="clearSource" type="button" class="miniBtn">Clear</button>
+        <button id="toggleKey" type="button">Hide</button>
+      </div>
+    </div>
 
     <textarea id="fullVerseKey" class="keyInput"
       placeholder="Paste the full verse here."></textarea>
@@ -215,29 +216,29 @@ textarea, input { font-family: inherit; }
       <div class="keyLabel">
         Say it out loud <span class="emojiSpeak">🗣️</span>
       </div>
-     <div class="btnRow">
-  <button id="togglePractice" type="button">Show</button>
-  <button id="clearInitials" type="button" class="miniBtn">Clear initials</button>
-  <button id="revealReset" type="button">Reset</button>
-</div>
-
+      <div class="btnRow">
+        <button id="togglePractice" type="button">Show</button>
+        <button id="toggleInitials" type="button" class="miniBtn">Hide initials</button>
+        <button id="clearInitials" type="button" class="miniBtn">Clear initials</button>
+        <button id="revealReset" type="button">Reset</button>
+      </div>
     </div>
 
     <div id="practiceWrap" style="display:none;">
       <div class="revealInstructions">
-        Recite the verse out loud. As you speak, type the initials to reveal the verse below. 
+        Recite the verse out loud. As you speak, type the initials to reveal the verse below.
       </div>
 
       <input
-  class="revealInput"
-  id="revealInput"
-  placeholder="Type initials as you speak"
-  autocomplete="off"
-  autocapitalize="off"
-  autocorrect="off"
-  spellcheck="false"
-  inputmode="text"
-/>
+        class="revealInput"
+        id="revealInput"
+        placeholder="Type initials as you speak"
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="text"
+      />
 
       <div class="revealHint" id="revealHint"></div>
       <div class="revealLine" id="revealLine"></div>
@@ -289,20 +290,23 @@ let keyHidden = false;
 let practiceHidden = true;
 let practiceArmed = false;
 
+// user-controlled, never default-hidden
+let initialsHidden = false;
+
 function buildRevealModel(fullText){
   const raw = (fullText || "").trim();
 
-// If text contains quotation marks, only use what’s inside them
-const quotedMatch = raw.match(/[“"]([^”"]+)[”"]/);
+  // If text contains quotation marks, only use what’s inside them
+  const quotedMatch = raw.match(/[“"]([^”"]+)[”"]/);
 
-const cleaned = quotedMatch
-  ? quotedMatch[1]
-  : raw
-      .replace(/https?:\/\/\S+/gi, "")
-      .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi, "")
-      .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g, "")
-      .replace(/\b[a-z]\b/gi, "")   // ← removes standalone footnote letters
-      .trim();
+  const cleaned = quotedMatch
+    ? quotedMatch[1]
+    : raw
+        .replace(/https?:\/\/\S+/gi, "")
+        .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi, "")
+        .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g, "")
+        .replace(/\b[a-z]\b/gi, "")   // removes standalone footnote letters
+        .trim();
 
   const words = cleaned
     .split(/\s+/)
@@ -332,6 +336,7 @@ const cleaned = quotedMatch
 const fullVerseKeyEl = document.getElementById("fullVerseKey");
 const toggleKeyEl = document.getElementById("toggleKey");
 const keyHiddenNoteEl = document.getElementById("keyHiddenNote");
+const clearSourceEl = document.getElementById("clearSource");
 
 const togglePracticeEl = document.getElementById("togglePractice");
 const revealResetEl = document.getElementById("revealReset");
@@ -342,7 +347,8 @@ const revealInputEl = document.getElementById("revealInput");
 const revealHintEl = document.getElementById("revealHint");
 const revealLineEl = document.getElementById("revealLine");
 const clearInitialsEl = document.getElementById("clearInitials");
-const clearSourceEl = document.getElementById("clearSource");
+
+const toggleInitialsEl = document.getElementById("toggleInitials");
 
 /* helpers */
 function setKeyHidden(hidden){
@@ -358,7 +364,6 @@ function setPracticeHidden(hidden){
   practiceHiddenNoteEl.style.display = hidden ? "block" : "none";
   togglePracticeEl.textContent = hidden ? "Show" : "Hide";
 }
-
 
 function resetRevealProgress(){
   if (!revealModel) return;
@@ -380,7 +385,8 @@ function renderReveal(){
     return;
   }
 
-  revealHintEl.textContent = `Initials: ${revealModel.initials.joined}`;
+  // User-controlled: show/hide initials (never hidden by default)
+  revealHintEl.textContent = initialsHidden ? "" : `Initials: ${revealModel.initials.joined}`;
 
   const parts = revealModel.tokens.map((t, i) => {
     const shown = revealModel.state.revealed[i];
@@ -418,32 +424,27 @@ fullVerseKeyEl.addEventListener("input", () => {
   revealModel = buildRevealModel(fullVerseKeyEl.value);
   resetRevealProgress();
 
-  clearSourceEl.addEventListener("click", () => {
-  // Clear the textarea
-  fullVerseKeyEl.value = "";
-
-  // Reset model + practice state
-  revealModel = null;
-  practiceArmed = false;
-
-  // Keep source visible (optional, but feels right after clearing)
-  setKeyHidden(false);
-
-  // Hide practice and clear any typed initials/reveal
-  setPracticeHidden(true);
-  revealInputEl.value = "";
-  renderReveal();
-
-  // Put cursor back in the source box for quick paste
-  fullVerseKeyEl.focus();
-});
-
   practiceArmed = false;
   setPracticeHidden(true);
 });
 
 toggleKeyEl.addEventListener("click", () => {
   setKeyHidden(!keyHidden);
+});
+
+clearSourceEl.addEventListener("click", () => {
+  fullVerseKeyEl.value = "";
+
+  revealModel = null;
+  practiceArmed = false;
+
+  setKeyHidden(false);
+  setPracticeHidden(true);
+
+  revealInputEl.value = "";
+  renderReveal();
+
+  fullVerseKeyEl.focus();
 });
 
 togglePracticeEl.addEventListener("click", () => {
@@ -458,6 +459,12 @@ togglePracticeEl.addEventListener("click", () => {
   }
 });
 
+toggleInitialsEl.addEventListener("click", () => {
+  initialsHidden = !initialsHidden;
+  toggleInitialsEl.textContent = initialsHidden ? "Show initials" : "Hide initials";
+  renderReveal();
+});
+
 revealInputEl.addEventListener("input", () => {
   if (!practiceArmed) return;
   applyRevealTypedText(revealInputEl.value);
@@ -470,8 +477,9 @@ revealResetEl.addEventListener("click", () => {
 });
 
 clearInitialsEl.addEventListener("click", () => {
-  if (!practiceArmed) return;           // only meaningful once practice is active
-  if (!revealModel) {                   // if no verse yet, just clear the field
+  if (!practiceArmed) return; // only meaningful once practice is active
+
+  if (!revealModel) { // if no verse yet, just clear the field
     revealInputEl.value = "";
     revealInputEl.focus();
     return;
@@ -485,10 +493,10 @@ clearInitialsEl.addEventListener("click", () => {
   revealInputEl.focus();
 });
 
-
 /* initial state */
 setKeyHidden(false);
 setPracticeHidden(true);
+toggleInitialsEl.textContent = "Hide initials"; // ensure consistent label
 renderReveal();
 </script>
 </body>
