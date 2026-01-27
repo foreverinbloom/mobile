@@ -169,7 +169,28 @@ button{
   vertical-align:middle;
   margin-left:4px;
 }
+.helpToggle{
+  -webkit-appearance:none;
+  appearance:none;
+  border:none;
+  background:transparent;
+  padding:0 4px;
+  margin-left:6px;
+  font-weight:900;
+  cursor:pointer;
+  color:var(--muted);
+}
 
+.helpTooltip{
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: #fafafa;
+  font-size: 14px;
+  line-height: 1.4;
+}
+  
 .emojiTitle{
   font-size:1.15em;
   vertical-align:middle;
@@ -227,8 +248,18 @@ textarea, input { font-family:inherit; }
   <!-- Practice -->
   <div class="practiceRow">
     <div class="keyLabel">
-      Say it out loud <span class="emojiSpeak">🗣️</span>
-    </div>
+  Say it out loud <span class="emojiSpeak">🗣️</span>
+  <button type="button" class="helpToggle" id="helpToggle" aria-expanded="false" aria-controls="helpTooltip">
+    ⓘ
+  </button>
+
+  <div class="helpTooltip" id="helpTooltip" hidden>
+    <strong>How to use</strong><br>
+    Say the verse out loud.<br>
+    Type the first letter of each word to reveal it.
+  </div>
+</div>
+
     <div class="btnRow">
       <button id="togglePractice" type="button">Show</button>
       <button id="toggleInitials" type="button" class="miniBtn">Hide initials</button>
@@ -296,13 +327,13 @@ function buildRevealModel(text){
   const raw = (text || "").trim();
 
   const quoted = raw.match(/[“"]([^”"]+)[”"]/);
-  const cleaned = quoted ? quoted[1] :
-    raw
-      .replace(/https?:\/\/\S+/gi,"")
-      .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
-      .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
-      .replace(/(^|\s)[a-z](?=[A-Z])/g,"$1")
-      .trim();
+ const cleaned = quoted ? quoted[1] :
+  raw
+    .replace(/https?:\/\/\S+/gi,"")
+    .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+    .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+    .replace(/\b[a-z]\b/gi,"")   // removes standalone footnote letters like a, b, c
+    .trim();
 
   const words = cleaned.split(/\s+/)
     .map(w => w.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g,""))
@@ -332,6 +363,14 @@ const revealLine = document.getElementById("revealLine");
 const clearInitials = document.getElementById("clearInitials");
 const toggleInitials = document.getElementById("toggleInitials");
 const reflectionPrompt = document.querySelector("#reflectionPrompt em");
+const helpToggle = document.getElementById("helpToggle");
+const helpTooltip = document.getElementById("helpTooltip");
+
+helpToggle.addEventListener("click", () => {
+  const nextHidden = !helpTooltip.hidden;
+  helpTooltip.hidden = nextHidden;
+  helpToggle.setAttribute("aria-expanded", String(!nextHidden));
+});
 
 /* Helpers */
 function setKeyHidden(h){
@@ -418,10 +457,13 @@ revealInput.addEventListener("input",()=>{
 });
 
 clearInitials.addEventListener("click",()=>{
-  if(!practiceArmed || !revealModel) return;
-  revealModel.state.cursor=0;
-  revealModel.state.revealed.fill(false);
+  if(!practiceArmed) return;
+
   revealInput.value="";
+  if(revealModel){
+    revealModel.state.cursor=0;
+    revealModel.state.revealed.fill(false);
+  }
   render();
   revealInput.focus();
 });
