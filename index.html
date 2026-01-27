@@ -12,7 +12,7 @@
   --muted:#666;
   --panel:#fff;
   --bg:#fff;
-  --reflectionInk:#1E293B; /* safe on muted yellow-ish themes */
+  --reflectionInk:#1E293B;
 }
 
 body{
@@ -23,56 +23,63 @@ body{
 }
 
 .wrap{
-  padding: 14px;
-  max-width: 520px;
-  margin: 0 auto;
+  padding:14px;
+  max-width:520px;
+  margin:0 auto;
 }
 
 /* Panel */
 .revealCard{
-  border: 3px solid var(--ink);
-  border-radius: 18px;
-  padding: 14px;
-  background: var(--panel);
-  display: grid;
-  gap: 12px;
+  border:3px solid var(--ink);
+  border-radius:18px;
+  padding:14px;
+  background:var(--panel);
+  display:grid;
+  gap:12px;
 }
 
-/* Titles/rows */
+/* Titles / rows */
 .revealTitle{
-  font-weight: 900;
-  font-size: 18px;
+  font-weight:900;
+  font-size:18px;
 }
 
-.keyRow, .practiceRow{
+.keyRow,
+.practiceRow{
   display:flex;
-  align-items:center;
   justify-content:space-between;
+  align-items:flex-start;
   gap:10px;
 }
 
-  .keyRowStacked{
-  flex-direction: column;
-  align-items: flex-start;
+.keyRowStacked{
+  flex-direction:column;
+  align-items:flex-start;
 }
-  
+
 .keyLabel{
-  font-weight: 900;
-  font-size: 14px;
+  font-weight:900;
+  font-size:14px;
+}
+
+.btnRow{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
 }
 
 .btnColumn{
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 6px;
-  align-items: flex-start;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:6px;
+  align-items:flex-start;
 }
 
 button{
-  -webkit-appearance: none;
-  appearance: none;
-
+  -webkit-appearance:none;
+  appearance:none;
   border:1px solid var(--border);
   background:#fff;
   border-radius:10px;
@@ -82,10 +89,9 @@ button{
 }
 
 .miniBtn{
-  padding: 6px 8px;
-  font-size: 12px;
-  border-radius: 9px;
-  font-weight: 800;
+  padding:6px 8px;
+  font-size:12px;
+  border-radius:9px;
 }
 
 /* Source textarea */
@@ -96,8 +102,8 @@ button{
   padding:10px;
   font-size:14px;
   font-weight:700;
-  resize: vertical;
-  min-height: 120px;
+  resize:vertical;
+  min-height:120px;
   box-sizing:border-box;
 }
 
@@ -115,16 +121,15 @@ button{
 .softRule{
   border:none;
   border-top:1px solid #e5e5e5;
-  margin: 2px 0;
+  margin:2px 0;
 }
 
-/* Instruction paragraph (no forced line breaks) */
+/* Instructions */
 .revealInstructions{
-  color:var(--ink);
   font-weight:700;
   font-size:14px;
   line-height:1.45;
-  margin-bottom: 10px; /* pushes initials line down */
+  margin-bottom:10px;
 }
 
 /* Input */
@@ -136,14 +141,14 @@ button{
   font-size:16px;
   font-weight:900;
   background:transparent;
-  padding: 8px 2px;
+  padding:8px 2px;
 }
 
 .revealHint{
   color:var(--muted);
   font-weight:700;
   font-size:14px;
-  letter-spacing: 0.02em;
+  letter-spacing:.02em;
 }
 
 /* Reveal line */
@@ -152,354 +157,280 @@ button{
   font-weight:900;
   line-height:1.35;
   word-wrap:break-word;
-  min-height: 260px;
+  min-height:260px;
 }
 
 .revealWord.hidden{ color:#bbb; }
 .revealWord.revealed{ color:#111; }
 
-/* Emoji cue for the header */
+/* Emojis */
 .emojiSpeak{
-  font-size: 1.4em;
-  line-height: 1;
-  vertical-align: middle;
-  margin-left: 4px;
+  font-size:1.4em;
+  vertical-align:middle;
+  margin-left:4px;
 }
 
 .emojiTitle{
-  font-size: 1.15em;
-  line-height: 1;
-  vertical-align: middle;
-  margin-left: 6px;
+  font-size:1.15em;
+  vertical-align:middle;
+  margin-left:6px;
 }
 
-/* Reflection prompt */
+/* Reflection */
 .reflectionPrompt{
-  margin-top: 10px;
-  color: var(--reflectionInk);
-  font-size: 15px;
-  line-height: 1.5;
-}
-.reflectionPrompt .star{
-  font-style: normal;
-  font-weight: 900;
-  margin-right: 6px;
-}
-.reflectionPrompt em{
-  font-style: italic;
-  font-weight: 800;
+  margin-top:10px;
+  color:var(--reflectionInk);
+  font-size:15px;
+  line-height:1.5;
 }
 
-/* Small mobile niceties */
-textarea, input { font-family: inherit; }
+.reflectionPrompt .star{
+  font-weight:900;
+  margin-right:6px;
+}
+
+.reflectionPrompt em{
+  font-style:italic;
+  font-weight:800;
+}
+
+textarea, input { font-family:inherit; }
 </style>
 </head>
 
 <body>
 <div class="wrap">
-  <section class="revealCard" aria-label="Rooted in the Word Scripture Memory Tool">
+<section class="revealCard" aria-label="Rooted in the Word Scripture Memory Tool">
 
-    <div class="revealTitle">
-      Rooted in the Word <span class="emojiTitle" aria-hidden="true">🌱</span>
-    </div>
-
-    <!-- Verse Source -->
-    <div class="keyRow keyRowStacked">
-  <div class="keyLabel">Verse source (used to generate initials)</div>
-  <div class="btnRow btnColumn">
-    <button id="clearSource" class="miniBtn">Clear</button>
-    <button id="toggleKey">Hide</button>
+  <div class="revealTitle">
+    Rooted in the Word <span class="emojiTitle">🌱</span>
   </div>
-</div>
 
-    <textarea id="fullVerseKey" class="keyInput"
-      placeholder="Paste the full verse here."></textarea>
+  <!-- Verse Source -->
+  <div class="keyRow keyRowStacked">
+    <div class="keyLabel">Verse source (used to generate initials)</div>
+    <div class="btnColumn">
+      <button id="clearSource" type="button" class="miniBtn">Clear</button>
+      <button id="toggleKey" type="button">Hide</button>
+    </div>
+  </div>
 
-    <div id="keyHiddenNote" class="keyHiddenNote" style="display:none;">
-      🫣 Verse source hidden. Click <b>Show</b> to view it.
+  <textarea id="fullVerseKey" class="keyInput"
+    placeholder="Paste the full verse here."></textarea>
+
+  <div id="keyHiddenNote" class="keyHiddenNote" style="display:none;">
+    🫣 Verse source hidden. Click <b>Show</b> to view it.
+  </div>
+
+  <hr class="softRule" />
+
+  <!-- Practice -->
+  <div class="practiceRow">
+    <div class="keyLabel">
+      Say it out loud <span class="emojiSpeak">🗣️</span>
+    </div>
+    <div class="btnRow">
+      <button id="togglePractice" type="button">Show</button>
+      <button id="toggleInitials" type="button" class="miniBtn">Hide initials</button>
+      <button id="clearInitials" type="button" class="miniBtn">Clear initials</button>
+    </div>
+  </div>
+
+  <div id="practiceWrap" style="display:none;">
+    <div class="revealInstructions">
+      Recite the verse out loud. As you speak, type the initials to reveal the verse below.
     </div>
 
-    <hr class="softRule" />
+    <input
+      class="revealInput"
+      id="revealInput"
+      placeholder="Type initials as you speak"
+      autocomplete="off"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      inputmode="text"
+    />
 
-    <!-- Practice -->
-    <div class="practiceRow">
-      <div class="keyLabel">
-        Say it out loud <span class="emojiSpeak">🗣️</span>
-      </div>
-      <div class="btnRow">
-        <button id="togglePractice" type="button">Show</button>
-        <button id="toggleInitials" type="button" class="miniBtn">Hide initials</button>
-        <button id="clearInitials" type="button" class="miniBtn">Clear initials</button>
-      </div>
+    <div class="revealHint" id="revealHint"></div>
+    <div class="revealLine" id="revealLine"></div>
+
+    <div class="reflectionPrompt" id="reflectionPrompt">
+      <span class="star">✦</span><em></em>
     </div>
+  </div>
 
-    <div id="practiceWrap" style="display:none;">
-      <div class="revealInstructions">
-        Recite the verse out loud. As you speak, type the initials to reveal the verse below.
-      </div>
+  <div id="practiceHiddenNote" class="keyHiddenNote">
+    🫣 Practice hidden. Click <b>Show</b> when ready to recite &amp; reveal.
+  </div>
 
-      <input
-        class="revealInput"
-        id="revealInput"
-        placeholder="Type initials as you speak"
-        autocomplete="off"
-        autocapitalize="off"
-        autocorrect="off"
-        spellcheck="false"
-        inputmode="text"
-      />
-
-      <div class="revealHint" id="revealHint"></div>
-      <div class="revealLine" id="revealLine"></div>
-
-      <div class="reflectionPrompt" id="reflectionPrompt">
-        <span class="star">✦</span><em></em>
-      </div>
-    </div>
-
-    <div id="practiceHiddenNote" class="keyHiddenNote">
-      🫣 Practice hidden. Click <b>Show</b> when ready to recite &amp; reveal.
-    </div>
-
-  </section>
+</section>
 </div>
 
 <script>
-/* ===============================
-   Daily reflection prompt (Option B)
-   =============================== */
+/* Reflection prompts */
 const reflectionPrompts = [
   "What does this reveal about God’s character?",
-  "What does this show about God’s faithfulness or consistency?",
+  "What does this show about God’s faithfulness?",
   "What does this verse assume is already true about God?",
-  "What does this reveal about God’s authority or sovereignty?",
-  "How does this verse reflect God’s holiness or righteousness?",
+  "What does this reveal about God’s authority?",
+  "How does this verse reflect God’s holiness?",
   "How is Christ reflected or anticipated here?",
   "What does this verse deny about God?"
 ];
 
-function getDailyPromptIndex(d = new Date()){
-  const y = d.getUTCFullYear();
-  const m = d.getUTCMonth();
-  const day = d.getUTCDate();
-  const dayNumber = Math.floor(Date.UTC(y, m, day) / 86400000);
-  return dayNumber % reflectionPrompts.length;
+function dailyPrompt(){
+  const d = Math.floor(Date.now() / 86400000);
+  return reflectionPrompts[d % reflectionPrompts.length];
 }
 
-function setDailyReflectionPrompt(){
-  const el = document.getElementById("reflectionPrompt");
-  el.querySelector("em").textContent = reflectionPrompts[getDailyPromptIndex()];
-}
-
-/* ===============================
-   Verse reveal model
-   =============================== */
+/* State */
 let revealModel = null;
 let keyHidden = false;
 let practiceHidden = true;
 let practiceArmed = false;
-
-// user-controlled, never default-hidden
 let initialsHidden = false;
 
-function buildRevealModel(fullText){
-  const raw = (fullText || "").trim();
+/* Build model */
+function buildRevealModel(text){
+  const raw = (text || "").trim();
 
-  // If text contains quotation marks, only use what’s inside them
-  const quotedMatch = raw.match(/[“"]([^”"]+)[”"]/);
+  const quoted = raw.match(/[“"]([^”"]+)[”"]/);
+  const cleaned = quoted ? quoted[1] :
+    raw
+      .replace(/https?:\/\/\S+/gi,"")
+      .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+      .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+      .replace(/(^|\s)[a-z](?=[A-Z])/g,"$1")
+      .trim();
 
-  const cleaned = quotedMatch
-    ? quotedMatch[1]
-    : raw
-        .replace(/https?:\/\/\S+/gi, "")
-        .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi, "")
-        .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g, "")
-        .replace(/\b[a-z]\b/gi, "")   // removes standalone footnote letters
-        .trim();
-
-  const words = cleaned
-    .split(/\s+/)
-    .map(w => w.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, ""))
+  const words = cleaned.split(/\s+/)
+    .map(w => w.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g,""))
     .filter(Boolean);
 
-  const tokens = words.map((word, i) => ({
-    i,
-    display: word,
-    initial: (word[0] || "").toLowerCase()
-  }));
-
   return {
-    tokens,
-    initials: {
-      letters: tokens.map(t => t.initial),
-      joined: tokens.map(t => t.initial.toUpperCase()).join(" ")
-    },
-    state: {
-      cursor: 0,
-      revealed: Array(tokens.length).fill(false)
-    }
+    tokens: words.map((w,i)=>({i,display:w,initial:w[0].toLowerCase()})),
+    initials: words.map(w=>w[0].toUpperCase()).join(" "),
+    state:{cursor:0,revealed:Array(words.length).fill(false)}
   };
 }
 
-/* DOM refs */
-const fullVerseKeyEl = document.getElementById("fullVerseKey");
-const toggleKeyEl = document.getElementById("toggleKey");
-const keyHiddenNoteEl = document.getElementById("keyHiddenNote");
-const clearSourceEl = document.getElementById("clearSource");
+/* DOM */
+const fullVerseKey = document.getElementById("fullVerseKey");
+const toggleKey = document.getElementById("toggleKey");
+const keyHiddenNote = document.getElementById("keyHiddenNote");
+const clearSource = document.getElementById("clearSource");
 
-const togglePracticeEl = document.getElementById("togglePractice");
-const practiceWrapEl = document.getElementById("practiceWrap");
-const practiceHiddenNoteEl = document.getElementById("practiceHiddenNote");
+const togglePractice = document.getElementById("togglePractice");
+const practiceWrap = document.getElementById("practiceWrap");
+const practiceHiddenNote = document.getElementById("practiceHiddenNote");
 
-const revealInputEl = document.getElementById("revealInput");
-const revealHintEl = document.getElementById("revealHint");
-const revealLineEl = document.getElementById("revealLine");
-const clearInitialsEl = document.getElementById("clearInitials");
+const revealInput = document.getElementById("revealInput");
+const revealHint = document.getElementById("revealHint");
+const revealLine = document.getElementById("revealLine");
 
-const toggleInitialsEl = document.getElementById("toggleInitials");
+const clearInitials = document.getElementById("clearInitials");
+const toggleInitials = document.getElementById("toggleInitials");
+const reflectionPrompt = document.querySelector("#reflectionPrompt em");
 
-/* helpers */
-function setKeyHidden(hidden){
-  keyHidden = hidden;
-  fullVerseKeyEl.style.display = hidden ? "none" : "block";
-  keyHiddenNoteEl.style.display = hidden ? "block" : "none";
-  toggleKeyEl.textContent = hidden ? "Show" : "Hide";
+/* Helpers */
+function setKeyHidden(h){
+  keyHidden=h;
+  fullVerseKey.style.display=h?"none":"block";
+  keyHiddenNote.style.display=h?"block":"none";
+  toggleKey.textContent=h?"Show":"Hide";
 }
 
-function setPracticeHidden(hidden){
-  practiceHidden = hidden;
-  practiceWrapEl.style.display = hidden ? "none" : "block";
-  practiceHiddenNoteEl.style.display = hidden ? "block" : "none";
-  togglePracticeEl.textContent = hidden ? "Show" : "Hide";
+function setPracticeHidden(h){
+  practiceHidden=h;
+  practiceWrap.style.display=h?"none":"block";
+  practiceHiddenNote.style.display=h?"block":"none";
+  togglePractice.textContent=h?"Show":"Hide";
 }
 
-function resetRevealProgress(){
-  if (!revealModel) return;
-  revealModel.state.cursor = 0;
-  revealModel.state.revealed = Array(revealModel.tokens.length).fill(false);
-  revealInputEl.value = "";
-  renderReveal();
-}
-
-function renderReveal(){
-  if (!practiceArmed){
-    revealHintEl.textContent = "";
-    revealLineEl.textContent = "";
-    return;
-  }
-  if (!revealModel || !revealModel.tokens.length){
-    revealHintEl.textContent = "Paste the verse above to begin.";
-    revealLineEl.textContent = "";
+function render(){
+  if(!practiceArmed || !revealModel){
+    revealHint.textContent="";
+    revealLine.textContent="";
     return;
   }
 
-  // User-controlled: show/hide initials (never hidden by default)
-  revealHintEl.textContent = initialsHidden ? "" : `Initials: ${revealModel.initials.joined}`;
+  revealHint.textContent = initialsHidden ? "" : `Initials: ${revealModel.initials}`;
 
-  const parts = revealModel.tokens.map((t, i) => {
-    const shown = revealModel.state.revealed[i];
-    const cls = shown ? "revealed" : "hidden";
-    const text = shown ? t.display : "•".repeat(Math.max(3, t.display.length));
-    return `<span class="revealWord ${cls}">${text}</span>`;
-  });
-
-  revealLineEl.innerHTML = parts.join(" ");
+  revealLine.innerHTML = revealModel.tokens.map((t,i)=>{
+    const shown=revealModel.state.revealed[i];
+    return `<span class="revealWord ${shown?"revealed":"hidden"}">${
+      shown?t.display:"•".repeat(Math.max(3,t.display.length))
+    }</span>`;
+  }).join(" ");
 }
 
-function applyRevealTypedText(typed){
-  if (!revealModel) return;
-  const letters = (typed || "").toLowerCase().match(/[a-z]/g) || [];
-
-  revealModel.state.cursor = 0;
-  revealModel.state.revealed = Array(revealModel.tokens.length).fill(false);
-
-  for (const ch of letters){
-    const cur = revealModel.state.cursor;
-    if (cur >= revealModel.initials.letters.length) break;
-
-    if (ch === revealModel.initials.letters[cur]){
-      revealModel.state.revealed[cur] = true;
-      revealModel.state.cursor++;
-    } else {
-      break;
-    }
-  }
-  renderReveal();
-}
-
-/* events */
-fullVerseKeyEl.addEventListener("input", () => {
-  revealModel = buildRevealModel(fullVerseKeyEl.value);
-  resetRevealProgress();
-
-  practiceArmed = false;
+/* Events */
+fullVerseKey.addEventListener("input",()=>{
+  revealModel = buildRevealModel(fullVerseKey.value);
+  practiceArmed=false;
   setPracticeHidden(true);
 });
 
-toggleKeyEl.addEventListener("click", () => {
-  setKeyHidden(!keyHidden);
-});
+toggleKey.addEventListener("click",()=>setKeyHidden(!keyHidden));
 
-clearSourceEl.addEventListener("click", () => {
-  fullVerseKeyEl.value = "";
-
-  revealModel = null;
-  practiceArmed = false;
-
+clearSource.addEventListener("click",()=>{
+  fullVerseKey.value="";
+  revealModel=null;
+  practiceArmed=false;
   setKeyHidden(false);
   setPracticeHidden(true);
-
-  revealInputEl.value = "";
-  renderReveal();
-
-  fullVerseKeyEl.focus();
+  revealInput.value="";
+  render();
+  fullVerseKey.focus();
 });
 
-togglePracticeEl.addEventListener("click", () => {
-  const goingToShow = practiceHidden;
+togglePractice.addEventListener("click",()=>{
+  const show = practiceHidden;
   setPracticeHidden(!practiceHidden);
-
-  if (goingToShow){
-    practiceArmed = true;
-    setDailyReflectionPrompt();
-    renderReveal();
-    revealInputEl.focus();
+  if(show){
+    practiceArmed=true;
+    reflectionPrompt.textContent=dailyPrompt();
+    render();
+    revealInput.focus();
   }
 });
 
-toggleInitialsEl.addEventListener("click", () => {
-  initialsHidden = !initialsHidden;
-  toggleInitialsEl.textContent = initialsHidden ? "Show initials" : "Hide initials";
-  renderReveal();
+toggleInitials.addEventListener("click",()=>{
+  initialsHidden=!initialsHidden;
+  toggleInitials.textContent=initialsHidden?"Show initials":"Hide initials";
+  render();
 });
 
-revealInputEl.addEventListener("input", () => {
-  if (!practiceArmed) return;
-  applyRevealTypedText(revealInputEl.value);
-});
-
-clearInitialsEl.addEventListener("click", () => {
-  if (!practiceArmed) return; // only meaningful once practice is active
-
-  if (!revealModel) { // if no verse yet, just clear the field
-    revealInputEl.value = "";
-    revealInputEl.focus();
-    return;
+revealInput.addEventListener("input",()=>{
+  if(!practiceArmed || !revealModel) return;
+  const letters = revealInput.value.toLowerCase().match(/[a-z]/g)||[];
+  revealModel.state.cursor=0;
+  revealModel.state.revealed.fill(false);
+  for(const ch of letters){
+    const i=revealModel.state.cursor;
+    if(ch===revealModel.tokens[i]?.initial){
+      revealModel.state.revealed[i]=true;
+      revealModel.state.cursor++;
+    } else break;
   }
-
-  // Clear typed initials + reset reveal state, but keep practice OPEN
-  revealModel.state.cursor = 0;
-  revealModel.state.revealed = Array(revealModel.tokens.length).fill(false);
-  revealInputEl.value = "";
-  renderReveal();
-  revealInputEl.focus();
+  render();
 });
 
-/* initial state */
+clearInitials.addEventListener("click",()=>{
+  if(!practiceArmed || !revealModel) return;
+  revealModel.state.cursor=0;
+  revealModel.state.revealed.fill(false);
+  revealInput.value="";
+  render();
+  revealInput.focus();
+});
+
+/* Init */
 setKeyHidden(false);
 setPracticeHidden(true);
-toggleInitialsEl.textContent = "Hide initials"; // ensure consistent label
-renderReveal();
+toggleInitials.textContent="Hide initials";
+render();
 </script>
 </body>
 </html>
