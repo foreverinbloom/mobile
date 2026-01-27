@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Verse Recall (Mobile)</title>
+
+<style>
+:root{
+  --border:#cfcfcf;
+  --ink:#111;
+  --muted:#666;
+  --panel:#fff;
+  --bg:#fff;
+  --reflectionInk:#1E293B; /* safe on muted yellow-ish themes */
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  color:var(--ink);
+}
+
+.wrap{
+  padding: 14px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* Panel */
+.revealCard{
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  padding: 14px;
+  background: var(--panel);
+  display: grid;
+  gap: 12px;
+}
+
+/* Titles/rows */
+.revealTitle{
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.keyRow, .practiceRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.keyLabel{
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.btnRow{
+  display:flex;
+  gap:8px;
+}
+
+button{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:10px;
+  padding:8px 10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.miniBtn{
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 9px;
+  font-weight: 800;
+}
+
+/* Source textarea */
+.keyInput{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px;
+  font-size:14px;
+  font-weight:700;
+  resize: vertical;
+  min-height: 120px;
+  box-sizing:border-box;
+}
+
+.keyHiddenNote{
+  border:1px dashed var(--border);
+  border-radius:12px;
+  padding:10px;
+  font-size:14px;
+  color:var(--muted);
+  font-weight:700;
+  background:#fafafa;
+}
+
+/* Divider */
+.softRule{
+  border:none;
+  border-top:1px solid #e5e5e5;
+  margin: 2px 0;
+}
+
+/* Instruction paragraph (no forced line breaks) */
+.revealInstructions{
+  color:var(--ink);
+  font-weight:700;
+  font-size:14px;
+  line-height:1.45;
+  margin-bottom: 10px; /* pushes initials line down */
+}
+
+/* Input */
+.revealInput{
+  width:100%;
+  border:none;
+  border-bottom:2px solid var(--ink);
+  outline:none;
+  font-size:16px;
+  font-weight:900;
+  background:transparent;
+  padding: 8px 2px;
+}
+
+.revealHint{
+  color:var(--muted);
+  font-weight:700;
+  font-size:14px;
+  letter-spacing: 0.02em;
+}
+
+/* Reveal line */
+.revealLine{
+  font-size:18px;
+  font-weight:900;
+  line-height:1.35;
+  word-wrap:break-word;
+  min-height: 260px;
+}
+
+.revealWord.hidden{ color:#bbb; }
+.revealWord.revealed{ color:#111; }
+
+/* Emoji cue for the header */
+.emojiSpeak{
+  font-size: 1.4em;
+  line-height: 1;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+/* Reflection prompt */
+.reflectionPrompt{
+  margin-top: 10px;
+  color: var(--reflectionInk);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.reflectionPrompt .star{
+  font-style: normal;
+  font-weight: 900;
+  margin-right: 6px;
+}
+.reflectionPrompt em{
+  font-style: italic;
+  font-weight: 800;
+}
+
+/* Small mobile niceties */
+textarea, input { font-family: inherit; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <section class="revealCard" aria-label="Verse recall">
+
+    <div class="revealTitle">Verse recall</div>
+
+    <!-- Verse Source -->
+    <div class="keyRow">
+      <div class="keyLabel">Verse source (used to generate initials)</div>
+      <button id="toggleKey" type="button">Hide</button>
+    </div>
+
+    <textarea id="fullVerseKey" class="keyInput"
+      placeholder="Paste the full verse here."></textarea>
+
+    <div id="keyHiddenNote" class="keyHiddenNote" style="display:none;">
+      🫣 Verse source hidden. Click <b>Show</b> to view it.
+    </div>
+
+    <hr class="softRule" />
+
+    <!-- Practice -->
+    <div class="practiceRow">
+      <div class="keyLabel">
+        Say it out loud <span class="emojiSpeak">🗣️</span>
+      </div>
+     <div class="btnRow">
+  <button id="togglePractice" type="button">Show</button>
+  <button id="clearInitials" type="button" class="miniBtn">Clear initials</button>
+  <button id="revealReset" type="button">Reset</button>
+</div>
+
+    </div>
+
+    <div id="practiceWrap" style="display:none;">
+      <div class="revealInstructions">
+        Recite the verse out loud. As you speak, type the initials to reveal the verse below. The verse source above is only used to generate initials.
+      </div>
+
+      <input
+  class="revealInput"
+  id="revealInput"
+  placeholder="Type initials as you speak"
+  autocomplete="off"
+  autocapitalize="off"
+  autocorrect="off"
+  spellcheck="false"
+  inputmode="text"
+/>
+
+      <div class="revealHint" id="revealHint"></div>
+      <div class="revealLine" id="revealLine"></div>
+
+      <div class="reflectionPrompt" id="reflectionPrompt">
+        <span class="star">✦</span><em></em>
+      </div>
+    </div>
+
+    <div id="practiceHiddenNote" class="keyHiddenNote">
+      🫣 Practice hidden. Click <b>Show</b> when ready to recite &amp; reveal.
+    </div>
+
+  </section>
+</div>
+
+<script>
+/* ===============================
+   Daily reflection prompt (Option B)
+   =============================== */
+const reflectionPrompts = [
+  "What does this reveal about God’s character?",
+  "What does this show about God’s faithfulness or consistency?",
+  "What does this verse assume is already true about God?",
+  "What does this reveal about God’s authority or sovereignty?",
+  "How does this verse reflect God’s holiness or righteousness?",
+  "How is Christ reflected or anticipated here?",
+  "What does this verse deny about God?"
+];
+
+function getDailyPromptIndex(d = new Date()){
+  const y = d.getUTCFullYear();
+  const m = d.getUTCMonth();
+  const day = d.getUTCDate();
+  const dayNumber = Math.floor(Date.UTC(y, m, day) / 86400000);
+  return dayNumber % reflectionPrompts.length;
+}
+
+function setDailyReflectionPrompt(){
+  const el = document.getElementById("reflectionPrompt");
+  el.querySelector("em").textContent = reflectionPrompts[getDailyPromptIndex()];
+}
+
+/* ===============================
+   Verse reveal model
+   =============================== */
+let revealModel = null;
+let keyHidden = false;
+let practiceHidden = true;
+let practiceArmed = false;
+
+function buildRevealModel(fullText){
+  const cleaned = (fullText || "").trim();
+
+  const words = cleaned
+    .split(/\s+/)
+    .map(w => w.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, ""))
+    .filter(Boolean);
+
+  const tokens = words.map((word, i) => ({
+    i,
+    display: word,
+    initial: (word[0] || "").toLowerCase()
+  }));
+
+  return {
+    tokens,
+    initials: {
+      letters: tokens.map(t => t.initial),
+      joined: tokens.map(t => t.initial.toUpperCase()).join(" ")
+    },
+    state: {
+      cursor: 0,
+      revealed: Array(tokens.length).fill(false)
+    }
+  };
+}
+
+/* DOM refs */
+const fullVerseKeyEl = document.getElementById("fullVerseKey");
+const toggleKeyEl = document.getElementById("toggleKey");
+const keyHiddenNoteEl = document.getElementById("keyHiddenNote");
+
+const togglePracticeEl = document.getElementById("togglePractice");
+const revealResetEl = document.getElementById("revealReset");
+const practiceWrapEl = document.getElementById("practiceWrap");
+const practiceHiddenNoteEl = document.getElementById("practiceHiddenNote");
+
+const revealInputEl = document.getElementById("revealInput");
+const revealHintEl = document.getElementById("revealHint");
+const revealLineEl = document.getElementById("revealLine");
+const clearInitialsEl = document.getElementById("clearInitials");
+
+
+/* helpers */
+function setKeyHidden(hidden){
+  keyHidden = hidden;
+  fullVerseKeyEl.style.display = hidden ? "none" : "block";
+  keyHiddenNoteEl.style.display = hidden ? "block" : "none";
+  toggleKeyEl.textContent = hidden ? "Show" : "Hide";
+}
+
+function setPracticeHidden(hidden){
+  practiceHidden = hidden;
+  practiceWrapEl.style.display = hidden ? "none" : "block";
+  practiceHiddenNoteElEl = practiceHiddenNoteEl; // (keep reference clear)
+  practiceHiddenNoteEl.style.display = hidden ? "block" : "none";
+  togglePracticeEl.textContent = hidden ? "Show" : "Hide";
+}
+
+function resetRevealProgress(){
+  if (!revealModel) return;
+  revealModel.state.cursor = 0;
+  revealModel.state.revealed = Array(revealModel.tokens.length).fill(false);
+  revealInputEl.value = "";
+  renderReveal();
+}
+
+function renderReveal(){
+  if (!practiceArmed){
+    revealHintEl.textContent = "";
+    revealLineEl.textContent = "";
+    return;
+  }
+  if (!revealModel || !revealModel.tokens.length){
+    revealHintEl.textContent = "Paste the verse above to begin.";
+    revealLineEl.textContent = "";
+    return;
+  }
+
+  revealHintEl.textContent = `Initials: ${revealModel.initials.joined}`;
+
+  const parts = revealModel.tokens.map((t, i) => {
+    const shown = revealModel.state.revealed[i];
+    const cls = shown ? "revealed" : "hidden";
+    const text = shown ? t.display : "•".repeat(Math.max(3, t.display.length));
+    return `<span class="revealWord ${cls}">${text}</span>`;
+  });
+
+  revealLineEl.innerHTML = parts.join(" ");
+}
+
+function applyRevealTypedText(typed){
+  if (!revealModel) return;
+  const letters = (typed || "").toLowerCase().match(/[a-z]/g) || [];
+
+  revealModel.state.cursor = 0;
+  revealModel.state.revealed = Array(revealModel.tokens.length).fill(false);
+
+  for (const ch of letters){
+    const cur = revealModel.state.cursor;
+    if (cur >= revealModel.initials.letters.length) break;
+
+    if (ch === revealModel.initials.letters[cur]){
+      revealModel.state.revealed[cur] = true;
+      revealModel.state.cursor++;
+    } else {
+      break;
+    }
+  }
+  renderReveal();
+}
+
+/* events */
+fullVerseKeyEl.addEventListener("input", () => {
+  revealModel = buildRevealModel(fullVerseKeyEl.value);
+  resetRevealProgress();
+
+  practiceArmed = false;
+  setPracticeHidden(true);
+});
+
+toggleKeyEl.addEventListener("click", () => {
+  setKeyHidden(!keyHidden);
+});
+
+togglePracticeEl.addEventListener("click", () => {
+  const goingToShow = practiceHidden;
+  setPracticeHidden(!practiceHidden);
+
+  if (goingToShow){
+    practiceArmed = true;
+    setDailyReflectionPrompt();
+    renderReveal();
+    revealInputEl.focus();
+  }
+});
+
+revealInputEl.addEventListener("input", () => {
+  if (!practiceArmed) return;
+  applyRevealTypedText(revealInputEl.value);
+});
+
+revealResetEl.addEventListener("click", () => {
+  practiceArmed = false;
+  setPracticeHidden(true);
+  resetRevealProgress();
+});
+
+clearInitialsEl.addEventListener("click", () => {
+  if (!practiceArmed) return;           // only meaningful once practice is active
+  if (!revealModel) {                   // if no verse yet, just clear the field
+    revealInputEl.value = "";
+    revealInputEl.focus();
+    return;
+  }
+
+  // Clear typed initials + reset reveal state, but keep practice OPEN
+  revealModel.state.cursor = 0;
+  revealModel.state.revealed = Array(revealModel.tokens.length).fill(false);
+  revealInputEl.value = "";
+  renderReveal();
+  revealInputEl.focus();
+});
+
+
+/* initial state */
+setKeyHidden(false);
+setPracticeHidden(true);
+renderReveal();
+</script>
+</body>
+</html>
