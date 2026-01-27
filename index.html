@@ -56,10 +56,11 @@ body{
   font-size: 14px;
 }
 
-.btnRow{
-  display:flex;
-  gap:8px;
-  flex-wrap: wrap;
+.btnColumn{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end; /* keeps them right-aligned */
 }
 
 button{
@@ -199,10 +200,10 @@ textarea, input { font-family: inherit; }
     <!-- Verse Source -->
     <div class="keyRow">
       <div class="keyLabel">Verse source (used to generate initials)</div>
-      <div class="btnRow">
-        <button id="clearSource" type="button" class="miniBtn">Clear</button>
-        <button id="toggleKey" type="button">Hide</button>
-      </div>
+    <div class="btnColumn">
+  <button id="clearSource" type="button" class="miniBtn">Clear</button>
+  <button id="toggleKey" type="button">Hide</button>
+</div>
     </div>
 
     <textarea id="fullVerseKey" class="keyInput"
