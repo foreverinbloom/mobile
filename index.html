@@ -224,15 +224,15 @@ textarea, input { font-family:inherit; }
 <section class="revealCard" aria-label="Rooted in the Word Scripture Memory Tool">
 
   <div class="revealTitle">
-    Rooted in the Word <span class="emojiTitle">🌱</span>
+    Rooted in the Word <span class="emojiTitle" aria-hidden="true">🌱</span>
   </div>
 
   <!-- Verse Source -->
   <div class="keyRow keyRowStacked">
     <div class="keyLabel">Verse source (used to generate initials)</div>
     <div class="btnRow">
-  <button id="clearSource" class="miniBtn">Clear</button>
-  <button id="toggleKey">Hide</button>
+  <button id="clearSource" type="button" class="miniBtn">Clear</button>
+<button id="toggleKey" type="button">Hide</button>
 </div>
   </div>
 
@@ -385,7 +385,12 @@ function setPracticeHidden(h){
   practiceWrap.style.display=h?"none":"block";
   practiceHiddenNote.style.display=h?"block":"none";
   togglePractice.textContent=h?"Show":"Hide";
-}
+
+  if (h) {
+    helpTooltip.hidden = true;
+    helpToggle.setAttribute("aria-expanded", "false");
+  }
+}  // ✅ <-- this is the missing brace
 
 function render(){
   if(!practiceArmed || !revealModel){
