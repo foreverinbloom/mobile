@@ -220,7 +220,6 @@ textarea, input { font-family: inherit; }
         <button id="togglePractice" type="button">Show</button>
         <button id="toggleInitials" type="button" class="miniBtn">Hide initials</button>
         <button id="clearInitials" type="button" class="miniBtn">Clear initials</button>
-        <button id="revealReset" type="button">Reset</button>
       </div>
     </div>
 
@@ -339,7 +338,6 @@ const keyHiddenNoteEl = document.getElementById("keyHiddenNote");
 const clearSourceEl = document.getElementById("clearSource");
 
 const togglePracticeEl = document.getElementById("togglePractice");
-const revealResetEl = document.getElementById("revealReset");
 const practiceWrapEl = document.getElementById("practiceWrap");
 const practiceHiddenNoteEl = document.getElementById("practiceHiddenNote");
 
@@ -468,12 +466,6 @@ toggleInitialsEl.addEventListener("click", () => {
 revealInputEl.addEventListener("input", () => {
   if (!practiceArmed) return;
   applyRevealTypedText(revealInputEl.value);
-});
-
-revealResetEl.addEventListener("click", () => {
-  practiceArmed = false;
-  setPracticeHidden(true);
-  resetRevealProgress();
 });
 
 clearInitialsEl.addEventListener("click", () => {
