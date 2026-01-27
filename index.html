@@ -287,7 +287,14 @@ let practiceHidden = true;
 let practiceArmed = false;
 
 function buildRevealModel(fullText){
-  const cleaned = (fullText || "").trim();
+  const cleaned = (fullText || "")
+  // remove URLs
+  .replace(/https?:\/\/\S+/gi, "")
+  // remove common translation references
+  .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi, "")
+  // remove standalone verse references like "Psalm 84:1"
+  .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g, "")
+  .trim();
 
   const words = cleaned
     .split(/\s+/)
