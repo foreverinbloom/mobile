@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MBC Scripture Memory Tool</title>
+<title>Rooted in the Word 🌳 | MBC</title>
 
 <style>
 :root{
@@ -155,6 +155,13 @@ button{
   margin-left: 4px;
 }
 
+  .emojiTitle{
+  font-size: 1.15em;
+  line-height: 1;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
 /* Reflection prompt */
 .reflectionPrompt{
   margin-top: 10px;
@@ -179,9 +186,11 @@ textarea, input { font-family: inherit; }
 
 <body>
 <div class="wrap">
-  <section class="revealCard" aria-label="Verse recall">
+  <section class="revealCard" aria-label="Rooted in the Word Scripture Memory Tool">
 
-    <div class="revealTitle">Verse recall</div>
+    <div class="revealTitle">
+  Rooted in the Word <span class="emojiTitle" aria-hidden="true">🌳</span>
+</div>
 
     <!-- Verse Source -->
     <div class="keyRow">
@@ -331,10 +340,10 @@ function setKeyHidden(hidden){
 function setPracticeHidden(hidden){
   practiceHidden = hidden;
   practiceWrapEl.style.display = hidden ? "none" : "block";
-  practiceHiddenNoteElEl = practiceHiddenNoteEl; // (keep reference clear)
   practiceHiddenNoteEl.style.display = hidden ? "block" : "none";
   togglePracticeEl.textContent = hidden ? "Show" : "Hide";
 }
+
 
 function resetRevealProgress(){
   if (!revealModel) return;
