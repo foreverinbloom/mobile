@@ -301,6 +301,7 @@ const cleaned = quotedMatch
       .replace(/https?:\/\/\S+/gi, "")
       .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi, "")
       .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g, "")
+      .replace(/\b[a-z]\b/gi, "")   // ← removes standalone footnote letters
       .trim();
 
   const words = cleaned
