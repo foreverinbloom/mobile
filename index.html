@@ -194,9 +194,12 @@ textarea, input { font-family: inherit; }
 
     <!-- Verse Source -->
     <div class="keyRow">
-      <div class="keyLabel">Verse source (used to generate initials)</div>
-      <button id="toggleKey" type="button">Hide</button>
-    </div>
+  <div class="keyLabel">Verse source (used to generate initials)</div>
+  <div class="btnRow">
+    <button id="clearSource" type="button" class="miniBtn">Clear</button>
+    <button id="toggleKey" type="button">Hide</button>
+  </div>
+</div>
 
     <textarea id="fullVerseKey" class="keyInput"
       placeholder="Paste the full verse here."></textarea>
@@ -338,7 +341,7 @@ const revealInputEl = document.getElementById("revealInput");
 const revealHintEl = document.getElementById("revealHint");
 const revealLineEl = document.getElementById("revealLine");
 const clearInitialsEl = document.getElementById("clearInitials");
-
+const clearSourceEl = document.getElementById("clearSource");
 
 /* helpers */
 function setKeyHidden(hidden){
@@ -413,6 +416,26 @@ function applyRevealTypedText(typed){
 fullVerseKeyEl.addEventListener("input", () => {
   revealModel = buildRevealModel(fullVerseKeyEl.value);
   resetRevealProgress();
+
+  clearSourceEl.addEventListener("click", () => {
+  // Clear the textarea
+  fullVerseKeyEl.value = "";
+
+  // Reset model + practice state
+  revealModel = null;
+  practiceArmed = false;
+
+  // Keep source visible (optional, but feels right after clearing)
+  setKeyHidden(false);
+
+  // Hide practice and clear any typed initials/reveal
+  setPracticeHidden(true);
+  revealInputEl.value = "";
+  renderReveal();
+
+  // Put cursor back in the source box for quick paste
+  fullVerseKeyEl.focus();
+});
 
   practiceArmed = false;
   setPracticeHidden(true);
