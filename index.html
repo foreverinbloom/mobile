@@ -191,7 +191,7 @@ button{
   font-size: 14px;
   line-height: 1.4;
 }
-  
+
 .emojiTitle{
   font-size:1.15em;
   vertical-align:middle;
@@ -232,9 +232,9 @@ textarea, input { font-family:inherit; }
   <div class="keyRow keyRowStacked">
     <div class="keyLabel">Verse source (used to generate initials)</div>
     <div class="btnRow">
-  <button id="clearSource" type="button" class="miniBtn">Clear</button>
-<button id="toggleKey" type="button">Hide</button>
-</div>
+      <button id="clearSource" type="button" class="miniBtn">Clear</button>
+      <button id="toggleKey" type="button">Hide</button>
+    </div>
   </div>
 
   <textarea id="fullVerseKey" class="keyInput"
@@ -249,17 +249,17 @@ textarea, input { font-family:inherit; }
   <!-- Practice -->
   <div class="practiceRow">
     <div class="keyLabel">
-  Say it out loud <span class="emojiSpeak">🗣️</span>
-  <button type="button" class="helpToggle" id="helpToggle" aria-expanded="false" aria-controls="helpTooltip">
-    ⓘ
-  </button>
+      Say it out loud <span class="emojiSpeak">🗣️</span>
+      <button type="button" class="helpToggle" id="helpToggle" aria-expanded="false" aria-controls="helpTooltip">
+        ⓘ
+      </button>
 
-  <div class="helpTooltip" id="helpTooltip" hidden>
-    <strong>A gentle reminder</strong><br>
-This isn’t a test. Pause, restart, or peek at the initials anytime.
-The goal is simply to spend time in God’s Word.
-  </div>
-</div>
+      <div class="helpTooltip" id="helpTooltip" hidden>
+        <strong>A gentle reminder</strong><br>
+        This isn’t a test. Pause, restart, or peek at the initials anytime.
+        The goal is simply to spend time in God’s Word.
+      </div>
+    </div>
 
     <div class="btnRow">
       <button id="togglePractice" type="button">Show</button>
@@ -300,20 +300,177 @@ The goal is simply to spend time in God’s Word.
 </div>
 
 <script>
-/* Reflection prompts */
-const reflectionPrompts = [
-  "What does this reveal about God’s character?",
-  "What does this show about God’s faithfulness?",
-  "What does this verse assume is already true about God?",
-  "What does this reveal about God’s authority?",
-  "How does this verse reflect God’s holiness?",
-  "How is Christ reflected or anticipated here?",
-  "What does this verse deny about God?"
+/* Reflection prompts: Families + lightweight verse-aware routing (no AI) */
+const QUESTION_FAMILIES = {
+  attributes: {
+    label: "God’s Nature & Attributes",
+    questions: [
+      "What does this reveal about God’s character or nature?",
+      "What does this show about God’s faithfulness or reliability?",
+      "What does this verse assume is already true about God?",
+      "What false idea about God does this verse correct or rule out?",
+      "What aspect of God feels weighty or emphasized here?"
+    ]
+  },
+
+  authority_holiness: {
+    label: "Authority, Rule, & Holiness",
+    questions: [
+      "How does this verse show God’s authority or rightful rule?",
+      "In what way does this verse reflect God’s holiness or distinctness?",
+      "Where do you see the Creator–creature distinction upheld here?",
+      "What response does God’s authority rightly call for in this verse?"
+    ]
+  },
+
+  covenant_promise: {
+    label: "Promise, Covenant, & Hope",
+    questions: [
+      "What promise is stated, implied, or echoed here?",
+      "What does this verse invite you to trust God for?",
+      "What future hope is grounded in this verse?",
+      "How does this verse stabilize faith in uncertainty?"
+    ]
+  },
+
+  christological: {
+    label: "Christological Trajectory",
+    questions: [
+      "How does this point to Christ?",
+      "How is Christ foreshadowed, revealed, or clarified here?",
+      "What role of Christ is hinted at here (prophet, priest, king, shepherd, sacrifice)?",
+      "How would this verse sound incomplete without Christ?"
+    ]
+  },
+
+  human_response: {
+    label: "Humanity & Response",
+    questions: [
+      "What does this verse reveal about humanity?",
+      "What does this expose about the human heart?",
+      "What response does this verse call for?",
+      "What would obedience look like in ordinary life today?"
+    ]
+  },
+
+  truth_vs_distortion: {
+    label: "Truth vs. Distortion",
+    questions: [
+      "What false belief does this verse confront?",
+      "What lie does this verse gently dismantle?",
+      "What assumption (cultural or personal) does this challenge?",
+      "What does this verse refuse to let us believe?"
+    ]
+  }
+};
+
+const ROUTING_RULES = [
+  {
+    family: "christological",
+    keywords: [
+      "christ","jesus","messiah","son","cross","blood","lamb",
+      "gospel","resurrection","mediator","redeem","ransom","save",
+      "salvation","grace","aton","propiti"
+    ],
+    weight: 3
+  },
+  {
+    family: "covenant_promise",
+    keywords: [
+      "i will","shall","promise","covenant","forever","never",
+      "with you","deliver","restore","bless","comfort","inherit"
+    ],
+    weight: 3
+  },
+  {
+    family: "authority_holiness",
+    keywords: [
+      "do not","do ","go ","keep","obey","remember","command",
+      "statute","law","ordinance","fear","holy","sanctif","clean"
+    ],
+    weight: 2
+  },
+  {
+    family: "attributes",
+    keywords: [
+      "i am","i am the lord","yahweh","lord","name",
+      "merciful","gracious","steadfast","faithful","good","just",
+      "righteous","almighty","compassion"
+    ],
+    weight: 2
+  },
+  {
+    family: "human_response",
+    keywords: [
+      "repent","believe","love","forgive","humble","seek","pray",
+      "confess","walk","follow","trust"
+    ],
+    weight: 2
+  },
+  {
+    family: "truth_vs_distortion",
+    keywords: [
+      "idols","vain","false","lie","deceiv","darkness",
+      "exchange","no other","not "
+    ],
+    weight: 1
+  }
 ];
 
-function dailyPrompt(){
-  const d = Math.floor(Date.now() / 86400000);
-  return reflectionPrompts[d % reflectionPrompts.length];
+function normalize(text){
+  return (text || "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function pickRandom(arr){
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function chooseFamiliesForVerse(verseText, { allowTwo = true } = {}){
+  const v = normalize(verseText);
+
+  const scores = Object.fromEntries(
+    Object.keys(QUESTION_FAMILIES).map(k => [k, 0])
+  );
+
+  for(const rule of ROUTING_RULES){
+    let hits = 0;
+    for(const kw of rule.keywords){
+      const needle = normalize(kw);
+      if(v.includes(needle)) hits++;
+    }
+    if(hits > 0) scores[rule.family] += hits * (rule.weight ?? 1);
+  }
+
+  const ranked = Object.entries(scores)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([family, score]) => ({ family, score }));
+
+  const top = ranked[0];
+  const second = ranked[1];
+
+  if(!top || top.score === 0){
+    return { families: Object.keys(QUESTION_FAMILIES), reason: "fallback_all" };
+  }
+
+  if(
+    allowTwo &&
+    second &&
+    second.score > 0 &&
+    second.score >= Math.max(1, Math.floor(top.score * 0.8))
+  ){
+    return { families: [top.family, second.family], reason: "tie_or_close" };
+  }
+
+  return { families: [top.family], reason: "top_match" };
+}
+
+function getPromptForVerse(verseText, opts = {}){
+  const { families } = chooseFamiliesForVerse(verseText, opts);
+  const pool = families.flatMap(f => QUESTION_FAMILIES[f]?.questions || []);
+  return pool.length ? pickRandom(pool) : "What stands out to you in this verse?";
 }
 
 /* State */
@@ -323,18 +480,34 @@ let practiceHidden = true;
 let practiceArmed = false;
 let initialsHidden = false;
 
+/* Shared verse cleaning */
+function extractCleanVerseText(raw){
+  const text = (raw || "").trim();
+  const quoted = text.match(/[“"]([^”"]+)[”"]/);
+
+  const cleaned = quoted ? quoted[1] :
+    text
+      .replace(/https?:\/\/\S+/gi,"")
+      .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+      .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+      .replace(/\b[a-z]\b/gi,"")
+      .trim();
+
+  return cleaned;
+}
+
 /* Build model */
 function buildRevealModel(text){
   const raw = (text || "").trim();
 
   const quoted = raw.match(/[“"]([^”"]+)[”"]/);
- const cleaned = quoted ? quoted[1] :
-  raw
-    .replace(/https?:\/\/\S+/gi,"")
-    .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
-    .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
-    .replace(/\b[a-z]\b/gi,"")   // removes standalone footnote letters like a, b, c
-    .trim();
+  const cleaned = quoted ? quoted[1] :
+    raw
+      .replace(/https?:\/\/\S+/gi,"")
+      .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+      .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+      .replace(/\b[a-z]\b/gi,"")   // removes standalone footnote letters like a, b, c
+      .trim();
 
   const words = cleaned.split(/\s+/)
     .map(w => w.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g,""))
@@ -391,7 +564,7 @@ function setPracticeHidden(h){
     helpTooltip.hidden = true;
     helpToggle.setAttribute("aria-expanded", "false");
   }
-}  // ✅ <-- this is the missing brace
+}
 
 function render(){
   if(!practiceArmed || !revealModel){
@@ -415,6 +588,14 @@ fullVerseKey.addEventListener("input",()=>{
   revealModel = buildRevealModel(fullVerseKey.value);
   practiceArmed=false;
   setPracticeHidden(true);
+
+  // Optional: if practice is visible, update prompt live
+  // (Since we just hid practice above, this won't fire right now,
+  // but you can remove setPracticeHidden(true) if you ever change flow.)
+  if(!practiceHidden){
+    const verseText = extractCleanVerseText(fullVerseKey.value);
+    reflectionPrompt.textContent = getPromptForVerse(verseText);
+  }
 });
 
 toggleKey.addEventListener("click",()=>setKeyHidden(!keyHidden));
@@ -426,6 +607,7 @@ clearSource.addEventListener("click",()=>{
   setKeyHidden(false);
   setPracticeHidden(true);
   revealInput.value="";
+  reflectionPrompt.textContent="";
   render();
   fullVerseKey.focus();
 });
@@ -435,7 +617,10 @@ togglePractice.addEventListener("click",()=>{
   setPracticeHidden(!practiceHidden);
   if(show){
     practiceArmed=true;
-    reflectionPrompt.textContent=dailyPrompt();
+
+    const verseText = extractCleanVerseText(fullVerseKey.value);
+    reflectionPrompt.textContent = getPromptForVerse(verseText);
+
     render();
     revealInput.focus();
   }
