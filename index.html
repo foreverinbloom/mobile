@@ -18,22 +18,21 @@
       --bg:#fff;
       --reflectionInk:#1E293B;
     }
-  .howToBanner{
-    background: #fafafa;
-    border-bottom: 1px dashed var(--border);
-    padding: 16px 12px;
-    margin: -10px -12px 12px; /* pulls it edge-to-edge inside tooltip */
-    text-align: center;
-  }
-
-
-    
-    .howToImage{
-  display: block;
-  max-width: 72px;
-  margin: 6px auto 14px;
+.howToBanner{
+  background: #fafafa;
+  border-bottom: 1px dashed var(--border);
+  margin: -10px -12px 14px; /* full width inside help box */
+  padding: 16px 0;
+  text-align: center;
 }
 
+.howToBanner img{
+  max-width: 100px;   /* adjust to taste */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+  
     body{
       margin:0;
       background:var(--bg);
@@ -267,12 +266,12 @@
 <div id="howToHelp" class="helpTooltip" hidden>
 
   <div class="howToBanner">
-    <img
-      src="bible-sprout.png"
-      alt="An open Bible held in a hand with a small sprout growing from it"
-      class="howToImage"
-    />
-  </div>
+  <img
+    src="bible-sprout.png"
+    alt=""
+    aria-hidden="true"
+  />
+</div>
 
   <p><strong>Purpose</strong><br>
   I created this tool for my own Scripture memory as a way to grow steadily and unhurriedly in God’s Word, and I’m sharing it in case others find it helpful.</p>
