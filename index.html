@@ -19,6 +19,12 @@
       --reflectionInk:#1E293B;
     }
 
+    .howToImage{
+  display: block;
+  max-width: 160px;
+  margin: 0 auto 14px;
+}
+
     body{
       margin:0;
       background:var(--bg);
@@ -185,9 +191,9 @@
       appearance:none;
       border:none;
       background:transparent;
-      padding:0 4px;
-      margin-left:6px;
-      font-weight:900;
+      padding:0px;
+      margin-left:0px;
+      font-weight:800;
       cursor:pointer;
       color:var(--muted);
     }
@@ -202,7 +208,7 @@
       line-height: 1.5;
       max-width: 100%;
     }
-
+    
     .emojiTitle{
       font-size:1.15em;
       vertical-align:middle;
@@ -238,6 +244,44 @@
       <div class="revealTitle">
         Rooted in the Word <span class="emojiTitle" aria-hidden="true">🌱</span>
       </div>
+
+ <button type="button" class="helpToggle" id="howToToggle" aria-expanded="false" aria-controls="howToHelp">
+  How to use this 🌱
+</button>
+  aria-expanded="false"
+  aria-controls="howToHelp"
+>
+  How to use this 🌱
+</button>
+
+      <div id="howToHelp" class="helpTooltip" hidden>
+
+  <img
+    src="images/bible-sprout.png"
+    alt="An open Bible held in a hand with a small sprout growing from it"
+    class="howToImage"
+  />
+
+  <p><strong>Purpose</strong><br>
+  I created this tool for my own Scripture memory as a way to grow steadily and unhurriedly in God’s Word, and I’m sharing it in case others find it helpful.</p>
+
+  <p><strong>Verse source</strong><br>
+  Paste the full verse or passage you’d like to work on. This text becomes the foundation for everything that follows.</p>
+
+  <p><strong>Say it out loud</strong><br>
+  Speaking Scripture aloud marks the shift from reading to active recall and engages memory differently than silent reading.</p>
+
+  <p><strong>Typing initials</strong><br>
+  As you recite the verse aloud, type the first letter of each word. Words are revealed only when the correct initial is entered.</p>
+
+  <p>If an incorrect letter is typed, nothing happens. This simply means a letter was missed. You can unhide the initials, take a peek, and try again.</p>
+
+  <p><strong>Reflection prompt</strong><br>
+  A verse-aware reflection question is provided to encourage thoughtful engagement. If a prompt doesn’t quite fit, feel free to skip it.</p>
+
+  <p><em>This isn’t a test. Pause, restart, or peek anytime. The goal is simply to spend time with God’s Word.</em></p>
+
+</div>
 
       <!-- Verse Source -->
       <div class="keyRow keyRowStacked">
@@ -509,7 +553,6 @@
     /* Build model */
     function buildRevealModel(text){
       const raw = (text || "").trim();
-
       const quoted = raw.match(/[“"]([^”"]+)[”"]/);
       const cleaned = quoted ? quoted[1] :
         raw
@@ -549,6 +592,15 @@
     const reflectionPrompt = document.querySelector("#reflectionPrompt em");
     const helpToggle = document.getElementById("helpToggle");
     const helpTooltip = document.getElementById("helpTooltip");
+    const howToToggle = document.getElementById("howToToggle");
+    const howToHelp = document.getElementById("howToHelp");
+
+howToToggle.addEventListener("click", () => {
+  const expanded = howToToggle.getAttribute("aria-expanded") === "true";
+  howToToggle.setAttribute("aria-expanded", String(!expanded));
+  howToHelp.hidden = expanded;
+});
+
 
     helpToggle.addEventListener("click", () => {
       const nextHidden = !helpTooltip.hidden;
