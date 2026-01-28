@@ -35,12 +35,16 @@
   margin: 0 auto;
 }
 
-    .howToTitle{
-  text-align: center;
-  font-weight: 700;
-  color: var(--muted);
-  margin-bottom: 8px;
+.howToTitle{
   font-family: "Playfair Script", cursive;
+  font-size: 22px;
+  font-weight: 400;
+  text-align: center;
+  color: #555;
+  margin: 6px auto 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
     body{
@@ -263,15 +267,19 @@
         Rooted in the Word <span class="emojiTitle" aria-hidden="true"></span>
       </div>
 
- <button
-  type="button"
-  class="helpToggle"
+<button
+  class="helpToggle howToTitle"
   id="howToToggle"
   aria-expanded="false"
   aria-controls="howToHelp"
 >
-  A gentle guide
+  A gentle guide 
 </button>
+
+<div id="howToHelp" class="helpTooltip" hidden>
+  <!-- banner + content -->
+</div>
+
 
 <div id="howToHelp" class="helpTooltip" hidden>
 
