@@ -212,22 +212,20 @@
       width: 100%;
     }
 
-    /* Banner */
     .howToBanner{
-      background: #fafafa;
+      margin: 6px -14px 10px; /* full-bleed inside the card */
+      padding: 0;
+      background: transparent;
+      border: none;
+      padding-bottom: 10px;
       border-bottom: 1px dashed var(--border);
-      margin: -10px -12px 14px; /* full width inside help box */
-      padding: 16px 0;
-      text-align: center;
     }
-
+    
     .howToBanner img{
-      width: 484px;     /* exact width on desktop */
-      max-width: 100%;  /* shrink on mobile */
+      width: 100%;
+      max-width: 100%;
       height: auto;
       display: block;
-      margin: 0 auto;
-      border-radius: 10px;
     }
 
     /* Reflection */
@@ -261,44 +259,41 @@
       </div>
 
       <button
-        class="helpToggle howToTitle"
-        id="howToToggle"
-        aria-expanded="false"
-        aria-controls="howToHelp"
-        type="button"
-      >
-        A gentle guide
-      </button>
+  class="helpToggle howToTitle"
+  id="howToToggle"
+  aria-expanded="false"
+  aria-controls="howToHelp"
+  type="button"
+>
+  A gentle guide
+</button>
 
-      <!-- ✅ ONLY ONE howToHelp (this is the fix) -->
-      <div id="howToHelp" class="helpTooltip" hidden>
+<!-- Banner lives OUTSIDE the tooltip box -->
+<div class="howToBanner" id="howToBanner" hidden>
+  <img src="bible-sprout.png" alt="" aria-hidden="true" />
+</div>
 
-        <div class="howToBanner">
-          <!-- 🔧 Make sure this path matches where your file lives -->
-          <!-- If your image is inside an /images folder, change to: images/bible-sprout.png -->
-          <img src="bible-sprout.png" alt="" aria-hidden="true" />
-        </div>
+<!-- Text-only help content -->
+<div id="howToHelp" class="helpTooltip" hidden>
+  <p><strong>Purpose</strong><br>
+  I created this tool for my own Scripture memory as a way to grow steadily and unhurriedly in God’s Word, and I’m sharing it in case others find it helpful.</p>
 
-        <p><strong>Purpose</strong><br>
-        I created this tool for my own Scripture memory as a way to grow steadily and unhurriedly in God’s Word, and I’m sharing it in case others find it helpful.</p>
+  <p><strong>Verse source</strong><br>
+  Paste the full verse or passage you’d like to commit to memory. This text becomes the foundation for the initials and the practice below.</p>
 
-        <p><strong>Verse source</strong><br>
-        Paste the full verse or passage you’d like to commit to memory. This text becomes the foundation for the initials and the practice below.</p>
+  <p><strong>Say it out loud</strong><br>
+  Speaking Scripture aloud marks the shift from reading to active recall and engages memory differently than silent reading.</p>
 
-        <p><strong>Say it out loud</strong><br>
-        Speaking Scripture aloud marks the shift from reading to active recall and engages memory differently than silent reading.</p>
+  <p><strong>Typing initials</strong><br>
+  As you recite the verse aloud, type the first letter of each word. Words are revealed only when the correct initial is entered.</p>
 
-        <p><strong>Typing initials</strong><br>
-        As you recite the verse aloud, type the first letter of each word. Words are revealed only when the correct initial is entered.</p>
+  <p>If an incorrect letter is typed, nothing happens. This simply means a letter was missed. You can unhide the initials, take a peek, and try again.</p>
 
-        <p>If an incorrect letter is typed, nothing happens. This simply means a letter was missed. You can unhide the initials, take a peek, and try again.</p>
+  <p><strong>Reflection prompt</strong><br>
+  A verse-aware reflection question is provided to encourage thoughtful engagement. If a prompt doesn’t quite fit, feel free to skip it.</p>
 
-        <p><strong>Reflection prompt</strong><br>
-        A verse-aware reflection question is provided to encourage thoughtful engagement. If a prompt doesn’t quite fit, feel free to skip it.</p>
-
-        <p><em>This isn’t a test. Pause, restart, or peek anytime. The goal is simply to spend time with God’s Word.</em></p>
-
-      </div>
+  <p><em>This isn’t a test. Pause, restart, or peek anytime. The goal is simply to spend time with God’s Word.</em></p>
+</div>
 
       <!-- Verse Source -->
       <div class="keyRow keyRowStacked">
@@ -375,12 +370,15 @@
 
     const howToToggle = document.getElementById("howToToggle");
     const howToHelp = document.getElementById("howToHelp");
-
+    const howToBanner = document.getElementById("howToBanner");
+    
     howToToggle.addEventListener("click", () => {
       const expanded = howToToggle.getAttribute("aria-expanded") === "true";
       howToToggle.setAttribute("aria-expanded", String(!expanded));
       howToHelp.hidden = expanded;
+      howToBanner.hidden = expanded;
     });
+
 
     // keep your existing tooltip toggle behavior
     const helpToggle = document.getElementById("helpToggle");
