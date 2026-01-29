@@ -198,19 +198,16 @@
     }
 
     /* “A gentle guide” title button styling */
-    .howToTitle{
-      font-family: "Playfair Display", serif;
-      font-style: italic;
-      font-size: 16px;
-      font-weight: 400;
-      text-align: center;
-      color: #555;
-      margin: 6px auto 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
+ .howToTitle{
+  @media (max-width: 480px){
+  font-family: "Montez", cursive;
+  font-size: 24px;
+  font-weight: normal;
+  text-align: center;
+  color: #555;
+  margin: 8px auto 14px;
+  letter-spacing: 0.02em;
+}
 
     .howToBanner{
       margin: 6px -14px 10px; /* full-bleed inside the card */
