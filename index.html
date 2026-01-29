@@ -6,7 +6,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montez&display=swap" rel="styleshee">
+  <link href="https://fonts.googleapis.com/css2?family=Montez&display=swap" rel="stylesheet">
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -52,8 +52,9 @@
 
     /* Titles / rows */
     .revealTitle{
-      font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-      font-weight:900;
+      font-family: "Playfair Display", serif;
+      font-style: italic;
+      font-weight: 400;
       font-size:18px;
     }
 
@@ -200,33 +201,27 @@
 
     /* “A gentle guide” title button styling */
     .howToTitle{
-  font-family: "Montez", cursive;
-  font-size: 18px;
-  font-weight: 400;
-  text-align: center;
-  color: #555;
-  margin: 8px auto 14px;
-  letter-spacing: 0.02em;
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-}
+      font-family: "Montez", cursive;
+      font-size: 30px;
+      font-weight: 400;
+      text-align: center;
+      color: #555;
+      margin: 6px auto 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      line-height: 1.05;
+    }
 
-@media (max-width: 480px){
-  .howToTitle{
-    font-size: 28px;
-  }
-}
-
+    /* Banner sits outside tooltip box */
     .howToBanner{
-      margin: 6px -14px 10px; /* full-bleed inside the card */
+      margin: 0 -14px 10px;     /* full-bleed inside the card */
       padding: 0 0 10px;
       background: transparent;
-      border: none;
-      border-bottom: 1px dashed var(--border);
+      border-bottom: 1px dashed var(--border);  /* <- the dotted line that needs to G-O */
     }
-    
+
     .howToBanner img{
       width: 100%;
       max-width: 100%;
@@ -271,11 +266,13 @@
         aria-controls="howToHelp"
         type="button"
       >
-        Read me to see how this works
+        A gentle guide
       </button>
 
       <!-- Banner lives OUTSIDE the tooltip box -->
       <div class="howToBanner" id="howToBanner" hidden>
+        <!-- Make sure bible-sprout.png is in the SAME folder as this HTML file,
+             or update the src to /images/bible-sprout.png (etc). -->
         <img src="bible-sprout.png" alt="" aria-hidden="true" />
       </div>
 
@@ -372,6 +369,9 @@
   </div>
 
   <script>
+    /* -------------------------
+       How-to + reminder toggles
+    --------------------------*/
     const howToToggle = document.getElementById("howToToggle");
     const howToHelp = document.getElementById("howToHelp");
     const howToBanner = document.getElementById("howToBanner");
@@ -390,6 +390,354 @@
       helpTooltip.hidden = nextHidden;
       helpToggle.setAttribute("aria-expanded", String(!nextHidden));
     });
+
+    /* -------------------------
+       Reflection prompt routing
+    --------------------------*/
+    const QUESTION_FAMILIES = {
+      attributes: {
+        label: "God’s Nature & Attributes",
+        questions: [
+          "What does this reveal about God’s character or nature?",
+          "What does this show about God’s faithfulness or reliability?",
+          "What does this verse assume is already true about God?",
+          "What false idea about God does this verse correct or rule out?",
+          "What aspect of God feels weighty or emphasized here?"
+        ]
+      },
+      authority_holiness: {
+        label: "Authority, Rule, & Holiness",
+        questions: [
+          "How does this verse show God’s authority or rightful rule?",
+          "In what way does this verse reflect God’s holiness or distinctness?",
+          "Where do you see the Creator–creature distinction upheld here?",
+          "What response does God’s authority rightly call for in this verse?"
+        ]
+      },
+      covenant_promise: {
+        label: "Promise, Covenant, & Hope",
+        questions: [
+          "What promise is stated, implied, or echoed here?",
+          "What does this verse invite you to trust God for?",
+          "What future hope is grounded in this verse?",
+          "How does this verse stabilize faith in uncertainty?"
+        ]
+      },
+      christological: {
+        label: "Christological Trajectory",
+        questions: [
+          "How does this point to Christ?",
+          "How is Christ foreshadowed, revealed, or clarified here?",
+          "What role of Christ is hinted at here (prophet, priest, king, shepherd, sacrifice)?",
+          "How would this verse sound incomplete without Christ?"
+        ]
+      },
+      human_response: {
+        label: "Humanity & Response",
+        questions: [
+          "What does this verse reveal about humanity?",
+          "What does this expose about the human heart?",
+          "What response does this verse call for?",
+          "What would obedience look like in ordinary life today?"
+        ]
+      },
+      truth_vs_distortion: {
+        label: "Truth vs. Distortion",
+        questions: [
+          "What false belief does this verse confront?",
+          "What lie does this verse gently dismantle?",
+          "What assumption (cultural or personal) does this challenge?",
+          "What does this verse refuse to let us believe?"
+        ]
+      }
+    };
+
+    const ROUTING_RULES = [
+      {
+        family: "christological",
+        keywords: [
+          "christ","jesus","messiah","son","cross","blood","lamb",
+          "gospel","resurrection","mediator","redeem","ransom","save",
+          "salvation","grace","aton","propiti"
+        ],
+        weight: 3
+      },
+      {
+        family: "covenant_promise",
+        keywords: [
+          "i will","shall","promise","covenant","forever","never",
+          "with you","deliver","restore","bless","comfort","inherit"
+        ],
+        weight: 3
+      },
+      {
+        family: "authority_holiness",
+        keywords: [
+          "do not","do ","go ","keep","obey","remember","command",
+          "statute","law","ordinance","fear","holy","sanctif","clean"
+        ],
+        weight: 2
+      },
+      {
+        family: "attributes",
+        keywords: [
+          "i am","i am the lord","yahweh","lord","name",
+          "merciful","gracious","steadfast","faithful","good","just",
+          "righteous","almighty","compassion"
+        ],
+        weight: 2
+      },
+      {
+        family: "human_response",
+        keywords: [
+          "repent","believe","love","forgive","humble","seek","pray",
+          "confess","walk","follow","trust"
+        ],
+        weight: 2
+      },
+      {
+        family: "truth_vs_distortion",
+        keywords: [
+          "idols","vain","false","lie","deceiv","darkness",
+          "exchange","no other","not "
+        ],
+        weight: 1
+      }
+    ];
+
+    function normalize(text){
+      return (text || "")
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function pickRandom(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function chooseFamiliesForVerse(verseText, { allowTwo = true } = {}){
+      const v = normalize(verseText);
+
+      const scores = Object.fromEntries(
+        Object.keys(QUESTION_FAMILIES).map(k => [k, 0])
+      );
+
+      for(const rule of ROUTING_RULES){
+        let hits = 0;
+        for(const kw of rule.keywords){
+          const needle = normalize(kw);
+          if(v.includes(needle)) hits++;
+        }
+        if(hits > 0) scores[rule.family] += hits * (rule.weight ?? 1);
+      }
+
+      const ranked = Object.entries(scores)
+        .sort((a,b)=>b[1]-a[1])
+        .map(([family, score]) => ({ family, score }));
+
+      const top = ranked[0];
+      const second = ranked[1];
+
+      if(!top || top.score === 0){
+        return { families: Object.keys(QUESTION_FAMILIES), reason: "fallback_all" };
+      }
+
+      if(
+        allowTwo &&
+        second &&
+        second.score > 0 &&
+        second.score >= Math.max(1, Math.floor(top.score * 0.8))
+      ){
+        return { families: [top.family, second.family], reason: "tie_or_close" };
+      }
+
+      return { families: [top.family], reason: "top_match" };
+    }
+
+    function getPromptForVerse(verseText, opts = {}){
+      const { families } = chooseFamiliesForVerse(verseText, opts);
+      const pool = families.flatMap(f => QUESTION_FAMILIES[f]?.questions || []);
+      return pool.length ? pickRandom(pool) : "What stands out to you in this verse?";
+    }
+
+    /* -------------------------
+       Memory reveal tool logic
+    --------------------------*/
+    let revealModel = null;
+    let keyHidden = false;
+    let practiceHidden = true;
+    let practiceArmed = false;
+    let initialsHidden = false;
+
+    function extractCleanVerseText(raw){
+      const text = (raw || "").trim();
+      const quoted = text.match(/[“"]([^”"]+)[”"]/);
+
+      const cleaned = quoted ? quoted[1] :
+        text
+          .replace(/https?:\/\/\S+/gi,"")
+          .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+          .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+          .replace(/\b[a-z]\b/gi,"")        // removes standalone footnote letters (a, b, c)
+          .trim();
+
+      return cleaned;
+    }
+
+    function buildRevealModel(text){
+      const raw = (text || "").trim();
+
+      const quoted = raw.match(/[“"]([^”"]+)[”"]/);
+      const cleaned = quoted ? quoted[1] :
+        raw
+          .replace(/https?:\/\/\S+/gi,"")
+          .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+          .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+          .replace(/\b[a-z]\b/gi,"")        // removes standalone footnote letters (a, b, c)
+          .trim();
+
+      const words = cleaned.split(/\s+/)
+        .map(w => w.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g,""))
+        .filter(Boolean);
+
+      return {
+        tokens: words.map((w,i)=>({i,display:w,initial:w[0].toLowerCase()})),
+        initials: words.map(w=>w[0].toUpperCase()).join(" "),
+        state:{cursor:0,revealed:Array(words.length).fill(false)}
+      };
+    }
+
+    const fullVerseKey = document.getElementById("fullVerseKey");
+    const toggleKey = document.getElementById("toggleKey");
+    const keyHiddenNote = document.getElementById("keyHiddenNote");
+    const clearSource = document.getElementById("clearSource");
+
+    const togglePractice = document.getElementById("togglePractice");
+    const practiceWrap = document.getElementById("practiceWrap");
+    const practiceHiddenNote = document.getElementById("practiceHiddenNote");
+
+    const revealInput = document.getElementById("revealInput");
+    const revealHint = document.getElementById("revealHint");
+    const revealLine = document.getElementById("revealLine");
+
+    const clearInitials = document.getElementById("clearInitials");
+    const toggleInitials = document.getElementById("toggleInitials");
+    const reflectionPrompt = document.querySelector("#reflectionPrompt em");
+
+    function setKeyHidden(h){
+      keyHidden=h;
+      fullVerseKey.style.display=h?"none":"block";
+      keyHiddenNote.style.display=h?"block":"none";
+      toggleKey.textContent=h?"Show":"Hide";
+    }
+
+    function setPracticeHidden(h){
+      practiceHidden=h;
+      practiceWrap.style.display=h?"none":"block";
+      practiceHiddenNote.style.display=h?"block":"none";
+      togglePractice.textContent=h?"Show":"Hide";
+
+      if (h) {
+        helpTooltip.hidden = true;
+        helpToggle.setAttribute("aria-expanded", "false");
+      }
+    }
+
+    function render(){
+      if(!practiceArmed || !revealModel){
+        revealHint.textContent="";
+        revealLine.textContent="";
+        return;
+      }
+
+      revealHint.textContent = initialsHidden ? "" : `Initials: ${revealModel.initials}`;
+
+      revealLine.innerHTML = revealModel.tokens.map((t,i)=>{
+        const shown=revealModel.state.revealed[i];
+        return `<span class="revealWord ${shown?"revealed":"hidden"}">${
+          shown?t.display:"•".repeat(Math.max(3,t.display.length))
+        }</span>`;
+      }).join(" ");
+    }
+
+    fullVerseKey.addEventListener("input",()=>{
+      revealModel = buildRevealModel(fullVerseKey.value);
+      practiceArmed=false;
+      setPracticeHidden(true);
+
+      if(!practiceHidden){
+        const verseText = extractCleanVerseText(fullVerseKey.value);
+        reflectionPrompt.textContent = getPromptForVerse(verseText);
+      }
+    });
+
+    toggleKey.addEventListener("click",()=>setKeyHidden(!keyHidden));
+
+    clearSource.addEventListener("click",()=>{
+      fullVerseKey.value="";
+      revealModel=null;
+      practiceArmed=false;
+      setKeyHidden(false);
+      setPracticeHidden(true);
+      revealInput.value="";
+      reflectionPrompt.textContent="";
+      render();
+      fullVerseKey.focus();
+    });
+
+    togglePractice.addEventListener("click",()=>{
+      const show = practiceHidden;
+      setPracticeHidden(!practiceHidden);
+      if(show){
+        practiceArmed=true;
+
+        const verseText = extractCleanVerseText(fullVerseKey.value);
+        reflectionPrompt.textContent = getPromptForVerse(verseText);
+
+        render();
+        revealInput.focus();
+      }
+    });
+
+    toggleInitials.addEventListener("click",()=>{
+      initialsHidden=!initialsHidden;
+      toggleInitials.textContent=initialsHidden?"Show initials":"Hide initials";
+      render();
+    });
+
+    revealInput.addEventListener("input",()=>{
+      if(!practiceArmed || !revealModel) return;
+      const letters = revealInput.value.toLowerCase().match(/[a-z]/g)||[];
+      revealModel.state.cursor=0;
+      revealModel.state.revealed.fill(false);
+      for(const ch of letters){
+        const i=revealModel.state.cursor;
+        if(ch===revealModel.tokens[i]?.initial){
+          revealModel.state.revealed[i]=true;
+          revealModel.state.cursor++;
+        } else break;
+      }
+      render();
+    });
+
+    clearInitials.addEventListener("click",()=>{
+      if(!practiceArmed) return;
+
+      revealInput.value="";
+      if(revealModel){
+        revealModel.state.cursor=0;
+        revealModel.state.revealed.fill(false);
+      }
+      render();
+      revealInput.focus();
+    });
+
+    /* Init */
+    setKeyHidden(false);
+    setPracticeHidden(true);
+    toggleInitials.textContent="Hide initials";
+    render();
   </script>
 </body>
 </html>
