@@ -7,6 +7,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montez&display=swap" rel="stylesheet">
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -200,18 +201,24 @@
 
     /* “A gentle guide” title button styling */
     .howToTitle{
-      font-family: "Playfair Display", serif;
-      font-style: italic;
-      font-size: 16px;
-      font-weight: 400;
-      text-align: center;
-      color: #555;
-      margin: 6px auto 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
+  font-family: "Montez", cursive;
+  font-size: 34px;
+  font-weight: 400;
+  text-align: center;
+  color: #555;
+  margin: 8px auto 14px;
+  letter-spacing: 0.02em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+@media (max-width: 480px){
+  .howToTitle{
+    font-size: 28px;
+  }
+}
 
     .howToBanner{
       margin: 6px -14px 10px; /* full-bleed inside the card */
