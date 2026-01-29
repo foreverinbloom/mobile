@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -51,7 +52,7 @@
 
     /* Titles / rows */
     .revealTitle{
-      font-family: "Playfair Display", serif;
+      font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
       font-weight:900;
       font-size:18px;
     }
@@ -198,22 +199,26 @@
     }
 
     /* “A gentle guide” title button styling */
- .howToTitle{
-  @media (max-width: 480px){
-  font-family: "Montez", cursive;
-  font-size: 24px;
-  font-weight: normal;
-  text-align: center;
-  color: #555;
-  margin: 8px auto 14px;
-  letter-spacing: 0.02em;
-}
+    .howToTitle{
+      font-family: "Playfair Display", serif;
+      font-style: italic;
+      font-size: 24px;
+      font-weight: 400;
+      text-align: center;
+      color: #555;
+      margin: 6px auto 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
 
     .howToBanner{
       margin: 6px -14px 10px; /* full-bleed inside the card */
       padding: 0 0 10px;
       background: transparent;
       border: none;
+      border-bottom: 1px dashed var(--border);
     }
     
     .howToBanner img{
