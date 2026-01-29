@@ -571,7 +571,7 @@
 
   function extractCleanVerseText(raw){
   const text = (raw || "").trim();
-  const quoted = text.match(/[“"]([^”"]+)[”"]/);
+  const quoted = text.match(/[“"]([^”"]+)[”"]/); // Do not steal the article "a". It is innocent.
 
   const cleaned = (quoted ? quoted[1] : text)
     .replace(/https?:\/\/\S+/gi,"")
