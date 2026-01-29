@@ -569,20 +569,20 @@
     let practiceArmed = false;
     let initialsHidden = false;
 
-    function extractCleanVerseText(raw){
-      const text = (raw || "").trim();
-      const quoted = text.match(/[“"]([^”"]+)[”"]/);
+  function extractCleanVerseText(raw){
+  const text = (raw || "").trim();
+  const quoted = text.match(/[“"]([^”"]+)[”"]/);
 
-      const cleaned = quoted ? quoted[1] :
-        text
-          .replace(/https?:\/\/\S+/gi,"")
-          .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
-          .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
-          .replace(/\b[a-z]\b/gi,"")        // removes standalone footnote letters (a, b, c)
-          .trim();
+  const cleaned = (quoted ? quoted[1] : text)
+    .replace(/https?:\/\/\S+/gi,"")
+    .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+    .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+    .replace(/\b[a-z](?=[\)\]\.,;:])/gi,"")   // remove footnote markers like a), b., c:
+    .replace(/\s+/g, " ")
+    .trim();
 
-      return cleaned;
-    }
+  return cleaned;
+}
 
     function buildRevealModel(text){
       const raw = (text || "").trim();
@@ -593,12 +593,13 @@
           .replace(/https?:\/\/\S+/gi,"")
           .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
           .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
-          .replace(/\b[a-z]\b/gi,"")        // removes standalone footnote letters (a, b, c)
+          .replace(/\b[a-z](?=[\)\]\.,;:])/gi,"")
           .trim();
 
-      const words = cleaned.split(/\s+/)
-        .map(w => w.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g,""))
-        .filter(Boolean);
+      const words = cleaned
+  .split(/\s+/)
+  .map(w => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "")) // keep any letters, strip edge punctuation
+  .filter(w => w.length > 0);
 
       return {
         tokens: words.map((w,i)=>({i,display:w,initial:w[0].toLowerCase()})),
