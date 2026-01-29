@@ -585,28 +585,31 @@
 }
 
     function buildRevealModel(text){
-      const raw = (text || "").trim();
+  const raw = (text || "").trim();
 
-      const quoted = raw.match(/[“"]([^”"]+)[”"]/);
-      const cleaned = quoted ? quoted[1] :
-        raw
-          .replace(/https?:\/\/\S+/gi,"")
-          .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
-          .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
-          .replace(/\b[a-z](?=[\)\]\.,;:])/gi,"")
-          .trim();
+  const quoted = raw.match(/[“"]([^”"]+)[”"]/);
 
-      const words = cleaned
-  .split(/\s+/)
-  .map(w => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "")) // keep any letters, strip edge punctuation
-  .filter(w => w.length > 0);
+  const cleaned = (quoted ? quoted[1] : raw)
+    .replace(/https?:\/\/\S+/gi,"")
+    .replace(/\b(?:ESV|NIV|NASB|KJV|NKJV|CSB|NLT)\b/gi,"")
+    .replace(/\b[A-Za-z]+\s+\d+:\d+\b/g,"")
+    .replace(/\b[a-z](?=\))/gi,"")  // only remove footnote markers like a) b) c)
+    .replace(/\s+/g, " ")
+    .trim();
 
-      return {
-        tokens: words.map((w,i)=>({i,display:w,initial:w[0].toLowerCase()})),
-        initials: words.map(w=>w[0].toUpperCase()).join(" "),
-        state:{cursor:0,revealed:Array(words.length).fill(false)}
-      };
-    }
+  const normalized = cleaned.replace(/[\u2019\u2018]/g, "'"); // curly apostrophes → straight
+
+  const words = normalized
+    .split(/\s+/)
+    .map(w => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "")) // keep letters, strip edge punctuation
+    .filter(w => w.length > 0);
+
+  return {
+    tokens: words.map((w,i)=>({ i, display:w, initial:w[0].toLowerCase() })),
+    initials: words.map(w=>w[0].toUpperCase()).join(" "),
+    state:{ cursor:0, revealed:Array(words.length).fill(false) }
+  };
+}
 
     const fullVerseKey = document.getElementById("fullVerseKey");
     const toggleKey = document.getElementById("toggleKey");
